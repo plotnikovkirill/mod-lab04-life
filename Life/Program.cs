@@ -194,7 +194,13 @@ namespace cli_life
         public string ClassifyPattern(HashSet<(int x, int y)> cluster, Board board)
         {
             int size = cluster.Count;
+            if (size == 4 && IsBlock(cluster, board)) return "Block (Still Life)";
             if (size == 6 && IsBeehive(cluster, board)) return "Beehive (Still Life)";
+            if (size == 5 && IsGlider(cluster, board)) return "Glider (Spaceship)";
+            if (size == 3 && IsBlinker(cluster, board)) return "Blinker (Oscillator)";
+            if (size == 7 && IsToad(cluster, board)) return "Toad (Oscillator)";
+            if (size == 9 && IsLWSS(cluster, board)) return "LWSS (Spaceship)";
+            if (size == 9 && IsPulsar(cluster, board)) return "Pulsar (Oscillator)";
 
             return "Unknown pattern";
         }
@@ -217,7 +223,75 @@ namespace cli_life
                    cluster.Contains((minX + 1, minY + 2)) &&
                    cluster.Contains((minX + 2, minY + 2));
         }
+        private bool IsBlock(HashSet<(int x, int y)> cluster, Board board)
+        {
+            var coords = cluster.ToList();
+            int minX = coords.Min(c => c.x);
+            int maxX = coords.Max(c => c.x);
+            int minY = coords.Min(c => c.y);
+            int maxY = coords.Max(c => c.y);
 
+            return maxX - minX == 1 && maxY - minY == 1;
+        }
+
+        private bool IsGlider(HashSet<(int x, int y)> cluster, Board board)
+        {
+            var coords = cluster.ToList();
+            int minX = coords.Min(c => c.x);
+            int minY = coords.Min(c => c.y);
+
+            return cluster.Contains((minX, minY + 2)) &&
+                   cluster.Contains((minX + 1, minY)) &&
+                   cluster.Contains((minX + 1, minY + 2)) &&
+                   cluster.Contains((minX + 2, minY + 1)) &&
+                   cluster.Contains((minX + 2, minY + 2));
+        }
+
+        private bool IsBlinker(HashSet<(int x, int y)> cluster, Board board)
+        {
+            var coords = cluster.ToList();
+
+            bool allSameRow = coords.Select(c => c.y).Distinct().Count() == 1;
+            bool allSameCol = coords.Select(c => c.x).Distinct().Count() == 1;
+
+            return allSameRow || allSameCol;
+        }
+        private bool IsLWSS(HashSet<(int x, int y)> cluster, Board board)
+        {
+            if (cluster.Count != 9) return false;
+
+            var coords = cluster.ToList();
+            int minX = coords.Min(c => c.x);
+            int minY = coords.Min(c => c.y);
+
+            return cluster.Contains((minX, minY)) &&
+                   cluster.Contains((minX + 3, minY)) &&
+                   cluster.Contains((minX + 4, minY + 1)) &&
+                   cluster.Contains((minX, minY + 2)) &&
+                   cluster.Contains((minX + 4, minY + 2)) &&
+                   cluster.Contains((minX + 1, minY + 3)) &&
+                   cluster.Contains((minX + 2, minY + 3)) &&
+                   cluster.Contains((minX + 3, minY + 3)) &&
+                   cluster.Contains((minX + 4, minY + 3));
+        }
+        private bool IsToad(HashSet<(int x, int y)> cluster, Board board)
+        {
+            var coords = cluster.ToList();
+            int minX = coords.Min(c => c.x);
+            int minY = coords.Min(c => c.y);
+
+            return cluster.Contains((minX + 1, minY)) &&
+                   cluster.Contains((minX + 2, minY)) &&
+                   cluster.Contains((minX + 3, minY)) &&
+                   cluster.Contains((minX, minY + 1)) &&
+                   cluster.Contains((minX + 1, minY + 1)) &&
+                   cluster.Contains((minX + 2, minY + 1));
+        }
+
+        private bool IsPulsar(HashSet<(int x, int y)> cluster, Board board)
+        {
+            return cluster.Count == 9;
+        }
     }
 
     class Program
