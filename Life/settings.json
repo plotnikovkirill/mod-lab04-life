@@ -1,0 +1,9 @@
+{
+    "Width": 50,
+    "Height": 20,
+    "CellSize": 1,
+    "SimulationDelay": 100,
+    "StableGenerationsThreshold": 10,
+    "ResearchIterations": 10,
+    "ResearchDensities": [ 0.1, 0.2, 0.3, 0.4, 0.5 ]
+}

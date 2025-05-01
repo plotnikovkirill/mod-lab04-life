@@ -64,6 +64,7 @@ namespace cli_life
                 cell.IsAlive = rand.NextDouble() < liveDensity;
                 if (cell.IsAlive) AliveCells++;
             }
+            Generation = 0;
         }
 
         public void Advance()
@@ -75,7 +76,9 @@ namespace cli_life
             {
                 cell.Advance();
                 if (cell.IsAlive) AliveCells++;
+                
             }
+            Generation++;
         }
         private void ConnectNeighbors()
         {
@@ -377,7 +380,7 @@ namespace cli_life
 
             plot.ShowLegend();
 
-            plot.SavePng("plot.png", 800, 600);
+            plot.SavePng("..\\..\\..\\plot.png", 800, 600);
             Console.WriteLine("Graph saved as plot.png");
         }
 
